@@ -15,7 +15,7 @@ export const Container = styled.article`
   span {
     margin: 0 0 5px;
     font-size: smaller;
-    color: #e476c8;
+    color: #E04C85;
     font-weight: bold;
   }
 `;

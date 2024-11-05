@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const Container = styled.footer`
-  background: #E8EFEC;
+  background: #ECECF4;
   height: 70px;
   display: flex;
   align-items: center;
@@ -15,6 +15,6 @@ export const Container = styled.footer`
 
   span {
     font-size: 14px;
-    color: #868484;
+    color: #58595D;
   }
 `;

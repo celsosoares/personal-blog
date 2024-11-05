@@ -21,6 +21,11 @@
       "src": "logo-allowme.png",
       "type": "image/png",
       "sizes": "192x192"
+    },
+    {
+      "src": "logo-allowme-news.png",
+      "type": "image/png",
+      "sizes": "192x192"
     }
   ],
   "start_url": ".",

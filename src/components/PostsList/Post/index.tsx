@@ -1,6 +1,6 @@
-import React from 'react';
-
-import { Container } from './styles';
+import React from "react";
+import { FaTwitter, FaLinkedin, FaPaperclip } from "react-icons/fa";
+import { Container, IconsContainer, PostHeader } from "./styles";
 
 interface PostProps {
   author: string;
@@ -13,7 +13,14 @@ export default function Post({ author, date, title, description }: PostProps) {
   return (
     <Container>
       <hr />
-      <h4>{author}</h4>
+      <PostHeader>
+        <h4>{author}</h4>
+        <IconsContainer>
+          <FaTwitter />
+          <FaLinkedin />
+          <FaPaperclip />
+        </IconsContainer>
+      </PostHeader>
       <span>{date}</span>
       <h2>{title}</h2>
       <small>{description}</small>
