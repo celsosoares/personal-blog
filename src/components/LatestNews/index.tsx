@@ -6,7 +6,7 @@ import posts from '../PostsList/posts';
 
 interface NewsType {
   id: number;
-  date: string;
+  date: Date;
   title: string;
 }
 

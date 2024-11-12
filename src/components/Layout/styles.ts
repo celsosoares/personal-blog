@@ -12,7 +12,7 @@ export const PostContainer = styled.section`
 
 export const NewsContainer = styled.section`
   flex: 1;
-  background-color: #F4F4FA;
+  background-color: #f4f4fa;
   padding: 20px;
   border-radius: 5px;
   display: flex;
@@ -38,5 +38,27 @@ export const FilterButton = styled.button`
 
   &:hover {
     background-color: #e0e0e0;
+  }
+`;
+
+export const DropdownMenu = styled.div`
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  z-index: 1000;
+  padding: 8px 0;
+  width: 150px;
+
+  p {
+    padding: 8px 16px;
+    margin: 0;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #f0f0f0;
+    }
   }
 `;
