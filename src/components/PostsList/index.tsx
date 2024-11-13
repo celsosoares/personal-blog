@@ -14,10 +14,18 @@ interface PostType {
 
 type PostsListProps = {
   sortCriterion: "recent" | "oldest" | "title";
+  selectedAuthor: string | null;
 };
 
-export default function PostsList({ sortCriterion }: PostsListProps) {
-  const sortedPosts = [...posts].sort((a, b) => {
+export default function PostsList({
+  sortCriterion,
+  selectedAuthor,
+}: PostsListProps) {
+  const filteredPosts = posts.filter(
+    (post) => !selectedAuthor || post.author === selectedAuthor
+  );
+
+  const sortedPosts = [...filteredPosts].sort((a, b) => {
     if (sortCriterion === "recent") {
       return new Date(b.date).getTime() - new Date(a.date).getTime();
     } else if (sortCriterion === "oldest") {

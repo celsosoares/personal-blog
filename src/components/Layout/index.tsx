@@ -13,6 +13,7 @@ import {
   PostContainer,
 } from "./styles";
 import { FaChevronDown } from "react-icons/fa";
+import authors from "../PostsList/authors";
 
 export default function Layout() {
   type SortCriterion = "recent" | "oldest" | "title";
@@ -26,6 +27,7 @@ export default function Layout() {
   const [isAuthorDropdownOpen, setIsAuthorDropdownOpen] = useState(false);
   const [isOrderDropdownOpen, setIsOrderDropdownOpen] = useState(false);
   const [sortCriterion, setSortCriterion] = useState<SortCriterion>("recent");
+  const [selectedAuthor, setSelectedAuthor] = useState<string | null>(null);
 
   return (
     <>
@@ -37,14 +39,43 @@ export default function Layout() {
               <FilterButton
                 onClick={() => setIsAuthorDropdownOpen((prev) => !prev)}
               >
-                Filtrar por Autor
+                {selectedAuthor
+                  ? `Autor: ${selectedAuthor}`
+                  : "Filtrar por Autor"}
                 <FaChevronDown style={{ marginLeft: "8px" }} />
               </FilterButton>
               {isAuthorDropdownOpen && (
                 <DropdownMenu>
-                  <p>Opção 1</p>
-                  <p>Opção 2</p>
-                  <p>Opção 3</p>
+                  {authors.map((author) => (
+                    <p
+                      key={author}
+                      onClick={() => {
+                        setSelectedAuthor(author);
+                        setIsAuthorDropdownOpen(false);
+                      }}
+                      style={{
+                        fontWeight:
+                          selectedAuthor === author ? "bold" : "normal",
+                        backgroundColor:
+                          selectedAuthor === author ? "#f0f0f0" : "transparent",
+                      }}
+                    >
+                      {author}
+                    </p>
+                  ))}
+                  <p
+                    onClick={() => {
+                      setSelectedAuthor(null);
+                      setIsAuthorDropdownOpen(false);
+                    }}
+                    style={{
+                      fontWeight: selectedAuthor === null ? "bold" : "normal",
+                      backgroundColor:
+                        selectedAuthor === null ? "#f0f0f0" : "transparent",
+                    }}
+                  >
+                    Todos os Autores
+                  </p>
                 </DropdownMenu>
               )}
             </div>
@@ -81,7 +112,10 @@ export default function Layout() {
               )}
             </div>
           </FilterContainer>
-          <PostsList sortCriterion={sortCriterion} />
+          <PostsList
+            sortCriterion={sortCriterion}
+            selectedAuthor={selectedAuthor}
+          />
         </PostContainer>
 
         <NewsContainer>
