@@ -4,7 +4,7 @@ import { Container, IconsContainer, PostHeader } from "./styles";
 
 interface PostProps {
   author: string;
-  date: Date;
+  date: string;
   title: string;
   description: string;
 }
@@ -21,7 +21,7 @@ export default function Post({ author, date, title, description }: PostProps) {
           <FaPaperclip />
         </IconsContainer>
       </PostHeader>
-      <span>{date.toLocaleDateString()}</span>
+      <span>{date}</span>
       <h2>{title}</h2>
       <small>{description}</small>
     </Container>

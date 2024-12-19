@@ -1,9 +1,13 @@
-import React, { useState } from "react";
-
+import React, { useState, useEffect } from "react";
 import Header from "../Header";
 import PostsList from "../PostsList";
 import Footer from "../Footer";
 import LatestNews from "../LatestNews";
+import { FaChevronDown } from "react-icons/fa";
+import { postsService } from "../../service/api/posts.service";
+import { authorsService } from "../../service/api/author.service";
+import { IPosts } from "../../interfaces/posts.interface";
+import { IAuthors } from "../../interfaces/authors.interface";
 import {
   BlogContainer,
   DropdownMenu,
@@ -12,8 +16,6 @@ import {
   NewsContainer,
   PostContainer,
 } from "./styles";
-import { FaChevronDown } from "react-icons/fa";
-import authors from "../PostsList/authors";
 
 export default function Layout() {
   type SortCriterion = "recent" | "oldest" | "title";
@@ -27,7 +29,44 @@ export default function Layout() {
   const [isAuthorDropdownOpen, setIsAuthorDropdownOpen] = useState(false);
   const [isOrderDropdownOpen, setIsOrderDropdownOpen] = useState(false);
   const [sortCriterion, setSortCriterion] = useState<SortCriterion>("recent");
-  const [selectedAuthor, setSelectedAuthor] = useState<string | null>(null);
+  const [selectedAuthor, setSelectedAuthor] = useState<IAuthors | null>(null);
+
+  const [posts, setPosts] = useState<IPosts[]>([]);
+  const [latestPosts, setLatestPosts] = useState<IPosts[]>([]);
+  const [authors, setAuthors] = useState<IAuthors[]>([]);
+
+  const handleSelectAuthor = async (authorId: string | "all") => {
+    if (authorId === "all") {
+      setSelectedAuthor(null);
+      return getPosts();
+    }
+
+    const selectedAuthor = authors.find((author) => author.id === authorId);
+    if (selectedAuthor) {
+      setSelectedAuthor(selectedAuthor);
+      const { data } = await postsService.getPostsByAuthorId(authorId);
+      setPosts(data);
+    }
+  };
+
+  const getPosts = async () => {
+    const { data } = await postsService.getPosts();
+    setPosts(data);
+    setLatestPosts(data);
+  };
+
+  const getAuthors = async () => {
+    const { data } = await authorsService.getAllAuthors();
+    setAuthors(data);
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await getPosts();
+      await getAuthors();
+    };
+    fetchData();
+  }, []);
 
   return (
     <>
@@ -37,38 +76,45 @@ export default function Layout() {
           <FilterContainer>
             <div style={{ position: "relative" }}>
               <FilterButton
+                style={{ cursor: "pointer" }}
                 onClick={() => setIsAuthorDropdownOpen((prev) => !prev)}
               >
                 {selectedAuthor
-                  ? `Autor: ${selectedAuthor}`
+                  ? `Autor: ${selectedAuthor.name}`
                   : "Filtrar por Autor"}
                 <FaChevronDown style={{ marginLeft: "8px" }} />
               </FilterButton>
-              {isAuthorDropdownOpen && (
+              {isAuthorDropdownOpen && authors && (
                 <DropdownMenu>
-                  {authors.map((author) => (
+                  {authors?.map((author) => (
                     <p
-                      key={author}
+                      key={author.id}
                       onClick={() => {
                         setSelectedAuthor(author);
+                        handleSelectAuthor(author.id);
                         setIsAuthorDropdownOpen(false);
                       }}
                       style={{
+                        cursor: "pointer",
                         fontWeight:
-                          selectedAuthor === author ? "bold" : "normal",
+                          selectedAuthor?.id === author.id ? "bold" : "normal",
                         backgroundColor:
-                          selectedAuthor === author ? "#f0f0f0" : "transparent",
+                          selectedAuthor?.id === author.id
+                            ? "#f0f0f0"
+                            : "transparent",
                       }}
                     >
-                      {author}
+                      {author.name}
                     </p>
                   ))}
                   <p
                     onClick={() => {
                       setSelectedAuthor(null);
+                      handleSelectAuthor("all");
                       setIsAuthorDropdownOpen(false);
                     }}
                     style={{
+                      cursor: "pointer",
                       fontWeight: selectedAuthor === null ? "bold" : "normal",
                       backgroundColor:
                         selectedAuthor === null ? "#f0f0f0" : "transparent",
@@ -82,9 +128,16 @@ export default function Layout() {
 
             <div style={{ position: "relative" }}>
               <FilterButton
+                style={{ cursor: "pointer" }}
                 onClick={() => setIsOrderDropdownOpen((prev) => !prev)}
               >
-                Ordenar por
+                {sortCriterion
+                  ? `Ordenar por: ${
+                      filterOptions.find(
+                        (option) => option.value === sortCriterion
+                      )?.label
+                    }`
+                  : "Ordenar por"}
                 <FaChevronDown style={{ marginLeft: "8px" }} />
               </FilterButton>
               {isOrderDropdownOpen && (
@@ -97,6 +150,7 @@ export default function Layout() {
                         setIsOrderDropdownOpen(false);
                       }}
                       style={{
+                        cursor: "pointer",
                         fontWeight:
                           sortCriterion === option.value ? "bold" : "normal",
                         backgroundColor:
@@ -115,6 +169,7 @@ export default function Layout() {
           <PostsList
             sortCriterion={sortCriterion}
             selectedAuthor={selectedAuthor}
+            posts={posts || []}
           />
         </PostContainer>
 

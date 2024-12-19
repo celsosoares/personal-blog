@@ -2,47 +2,42 @@ import React from "react";
 
 import { Container } from "./styles";
 import Post from "./Post";
-import posts from "./posts";
-
-interface PostType {
-  id: number;
-  author: string;
-  date: Date;
-  title: string;
-  description: string;
-}
+import { IPosts } from "../../interfaces/posts.interface";
+import { IAuthors } from "../../interfaces/authors.interface";
 
 type PostsListProps = {
   sortCriterion: "recent" | "oldest" | "title";
-  selectedAuthor: string | null;
+  selectedAuthor: IAuthors | null;
+  posts: IPosts[];
 };
 
 export default function PostsList({
   sortCriterion,
   selectedAuthor,
+  posts,
 }: PostsListProps) {
   const filteredPosts = posts.filter(
-    (post) => !selectedAuthor || post.author === selectedAuthor
+    (post) => !selectedAuthor || post.author.id === selectedAuthor.id
   );
 
   const sortedPosts = [...filteredPosts].sort((a, b) => {
     if (sortCriterion === "recent") {
-      return new Date(b.date).getTime() - new Date(a.date).getTime();
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     } else if (sortCriterion === "oldest") {
-      return new Date(a.date).getTime() - new Date(b.date).getTime();
+      return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
     }
     return a.title.localeCompare(b.title);
   });
 
   return (
     <Container>
-      {sortedPosts.map((post: PostType) => (
+      {sortedPosts.map((post: IPosts) => (
         <Post
           key={post.id}
-          author={post.author}
-          date={post.date}
+          author={post.author.name}
+          date={new Date(post.createdAt).toLocaleDateString()}
           title={post.title}
-          description={post.description}
+          description={post.content}
         />
       ))}
     </Container>
