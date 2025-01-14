@@ -174,7 +174,9 @@ export default function Layout() {
         </PostContainer>
 
         <NewsContainer>
-          <LatestNews />
+          <LatestNews 
+            posts={latestPosts || []}
+          />
         </NewsContainer>
       </BlogContainer>
       <Footer />

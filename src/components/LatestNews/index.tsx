@@ -1,25 +1,26 @@
-import React from 'react';
+import React from "react";
 
-import { Container } from './styles';
-import News from './News';
-import posts from '../PostsList/posts';
+import { Container } from "./styles";
+import News from "./News";
+import { IPosts } from "../../interfaces/posts.interface";
 
-interface NewsType {
-  id: number;
-  date: Date;
-  title: string;
-}
+type LatestNewsProps = {
+  posts: IPosts[];
+};
 
-export default function LatestNews() {
+export default function LatestNews({ posts }: LatestNewsProps) {
+  const sortedPosts = posts.sort((a, b) => {
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });
+
   return (
     <Container>
-        <h2>Últimas notícias</h2>
-      {posts.map((post: NewsType) => (    
-        <News
-          key={post.id}
-          date={post.date}
-          title={post.title}
-        />
+      <h2>Últimas notícias</h2>
+      {sortedPosts.map((post: IPosts) => (
+        <News 
+          key={post.id} 
+          date={new Date(post.createdAt).toLocaleDateString()} 
+          title={post.title} />
       ))}
     </Container>
   );
